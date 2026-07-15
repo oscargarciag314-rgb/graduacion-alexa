@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Graduación de Alexa 🎓</title>
-    <!-- Importamos el cliente de Supabase desde un CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
@@ -17,8 +16,9 @@
             margin: 0;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
         }
         .container {
             max-width: 450px;
@@ -31,6 +31,8 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             box-sizing: border-box;
+            margin-bottom: 30px;
+            margin-top: 20px;
         }
         h1 { 
             color: #fff; 
@@ -94,6 +96,38 @@
             font-weight: bold;
             color: #90e0ef;
         }
+        /* ESTILOS DE LA NUEVA GALERÍA */
+        .gallery-container {
+            max-width: 600px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+        .gallery-title {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 15px;
+            text-align: left;
+            border-left: 4px solid #00b4d8;
+            padding-left: 10px;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .gallery-item {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.1);
+            background-color: rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        .gallery-item:hover {
+            transform: scale(1.03);
+        }
     </style>
 </head>
 <body>
@@ -105,7 +139,6 @@
         <div class="upload-area" id="drop-zone">
             <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#00b4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             <p>Toca aquí para subir tus fotos 📸</p>
-            <!-- Acepta múltiples imágenes y activa la cámara directamente en móviles -->
             <input type="file" id="file-input" multiple accept="image/*">
         </div>
 
@@ -117,20 +150,56 @@
         </div>
     </div>
 
-<script>
-        // ==========================================
-        // CONFIGURACIÓN DE TU BASE DE DATOS SUPABASE
-        // ==========================================
+    <div class="gallery-container">
+        <div class="gallery-title">Fotos del evento 📸</div>
+        <div class="gallery-grid" id="gallery-grid">
+            </div>
+    </div>
+
+    <script>
         const SUPABASE_URL = 'https://nwsbuuiyginbawtbtxym.supabase.co'; 
         const SUPABASE_KEY = 'sb_publishable_nuvC0iDiUyP7hSirMEXz2g_8GrAb6nd';
 
-        // Cambiamos el nombre de la variable a supabaseClient para evitar conflictos
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const fileInput = document.getElementById('file-input');
         const statusContainer = document.getElementById('status-container');
         const statusText = document.getElementById('status-text');
         const progressBar = document.getElementById('progress');
+        const galleryGrid = document.getElementById('gallery-grid');
+
+        // Función para cargar y mostrar las fotos desde Supabase
+        async function cargarGaleria() {
+            galleryGrid.innerHTML = '';
+            const { data, error } = await supabaseClient.storage.from('fotos').list('', {
+                limit: 100,
+                sortBy: { column: 'name', order: 'desc' } // Muestra las más recientes primero
+            });
+
+            if (error) {
+                console.error('Error al cargar galería:', error.message);
+                return;
+            }
+
+            if (data) {
+                data.forEach(file => {
+                    // Evitamos cargar carpetas o marcadores vacíos si los hay
+                    if (file.name === '.emptyFolderPlaceholder') return;
+
+                    // Generamos la URL pública de la imagen
+                    const { data: urlData } = supabaseClient.storage.from('fotos').getPublicUrl(file.name);
+                    
+                    if (urlData && urlData.publicUrl) {
+                        const img = document.createElement('img');
+                        img.src = urlData.publicUrl;
+                        img.className = 'gallery-item';
+                        // Permite guardar la foto dejando presionado en móvil
+                        img.setAttribute('loading', 'lazy'); 
+                        galleryGrid.appendChild(img);
+                    }
+                });
+            }
+        }
 
         fileInput.addEventListener('change', async (event) => {
             const files = event.target.files;
@@ -145,14 +214,11 @@
 
             for (let i = 0; i < totalFiles; i++) {
                 const file = files[i];
-                
-                // Creamos un nombre único usando timestamp y random string para evitar duplicados
                 const fileExt = file.name.split('.').pop();
                 const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
 
                 statusText.innerText = `Subiendo foto ${i + 1} de ${totalFiles}...`;
 
-                // Usamos la variable supabaseClient corregida aquí:
                 const { data, error } = await supabaseClient.storage
                     .from('fotos')
                     .upload(fileName, file, {
@@ -174,8 +240,14 @@
 
             statusText.innerText = `¡Listo! Las ${totalFiles} fotos se subieron con éxito. 🎉`;
             statusText.style.color = '#00f5d4';
-            fileInput.value = ''; // Limpia el input para que puedan volver a seleccionar
+            fileInput.value = ''; 
+            
+            // Recargamos la galería para mostrar lo nuevo de inmediato
+            setTimeout(cargarGaleria, 800);
         });
+
+        // Ejecutar la carga al abrir la página
+        cargarGaleria();
     </script>
 </body>
 </html>
