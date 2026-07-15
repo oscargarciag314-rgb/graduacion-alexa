@@ -117,15 +117,15 @@
         </div>
     </div>
 
-    <script>
+<script>
         // ==========================================
         // CONFIGURACIÓN DE TU BASE DE DATOS SUPABASE
         // ==========================================
-        // Reemplaza los siguientes valores con los que copiaste de tu panel de Supabase:
         const SUPABASE_URL = 'https://nwsbuuiyginbawtbtxym.supabase.co'; 
         const SUPABASE_KEY = 'sb_publishable_nuvC0iDiUyP7hSirMEXz2g_8GrAb6nd';
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Cambiamos el nombre de la variable a supabaseClient para evitar conflictos
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const fileInput = document.getElementById('file-input');
         const statusContainer = document.getElementById('status-container');
@@ -152,8 +152,8 @@
 
                 statusText.innerText = `Subiendo foto ${i + 1} de ${totalFiles}...`;
 
-                // Sube la foto al bucket "fotos" de Supabase
-                const { data, error } = await supabase.storage
+                // Usamos la variable supabaseClient corregida aquí:
+                const { data, error } = await supabaseClient.storage
                     .from('fotos')
                     .upload(fileName, file, {
                         cacheControl: '3600',
