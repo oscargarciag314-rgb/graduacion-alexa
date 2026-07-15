@@ -26,29 +26,87 @@
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            padding: 35px 25px;
+            padding: 30px 20px;
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             box-sizing: border-box;
-            margin-bottom: 30px;
-            margin-top: 20px;
+            margin-bottom: 25px;
+            margin-top: 10px;
         }
         h1 { 
             color: #fff; 
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             font-size: 1.8rem;
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         p { 
             color: #a0aec0; 
-            font-size: 1rem; 
-            line-height: 1.5;
-            margin-bottom: 30px;
+            font-size: 0.95rem; 
+            line-height: 1.4;
+            margin-bottom: 20px;
         }
+        
+        /* ESTILOS DEL FORMULARIO RSVP */
+        .rsvp-form {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .rsvp-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #00b4d8;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #cbd5e0;
+            margin-bottom: 4px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #00b4d8;
+        }
+        .btn-rsvp {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #00b4d8;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-rsvp:hover {
+            background: #00f5d4;
+            color: #111b24;
+        }
+
+        /* ESTILOS DE SUBIDA DE FOTOS */
         .upload-area {
             border: 2px dashed #00b4d8;
-            padding: 40px 10px;
+            padding: 30px 10px;
             border-radius: 15px;
             background-color: rgba(0, 180, 216, 0.05);
             cursor: pointer;
@@ -60,7 +118,7 @@
             border-color: #90e0ef;
         }
         .upload-area p {
-            margin: 15px 0 0 0;
+            margin: 10px 0 0 0;
             font-weight: bold;
             color: #00b4d8;
         }
@@ -74,7 +132,7 @@
             cursor: pointer;
         }
         #status-container {
-            margin-top: 25px;
+            margin-top: 20px;
             display: none;
         }
         .progress-bar {
@@ -92,19 +150,21 @@
             transition: width 0.2s ease;
         }
         #status-text {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: bold;
             color: #90e0ef;
         }
-        /* ESTILOS DE LA NUEVA GALERÍA */
+
+        /* ESTILOS DE LA GALERÍA */
         .gallery-container {
             max-width: 600px;
             width: 100%;
             box-sizing: border-box;
             padding: 0 10px;
+            margin-bottom: 40px;
         }
         .gallery-title {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #fff;
             margin-bottom: 15px;
             text-align: left;
@@ -134,10 +194,31 @@
 
     <div class="container">
         <h1>¡La Graduación de Alexa! 🎓✨</h1>
-        <p>¡Ayúdanos a capturar cada recuerdo! Sube aquí todas las fotos que te tomes durante la fiesta para guardarlas en el álbum.</p>
+        <p>¡Queremos contar contigo en este día tan especial!</p>
         
+        <div class="rsvp-form" id="rsvp-section">
+            <div class="rsvp-title">Confirmar Asistencia 📝</div>
+            <form id="form-rsvp">
+                <div class="form-group">
+                    <label for="rsvp-name">Nombre Completo:</label>
+                    <input type="text" id="rsvp-name" placeholder="Ej. Juan Pérez" required>
+                </div>
+                <div class="form-group">
+                    <label for="rsvp-guests">Acompañantes:</label>
+                    <select id="rsvp-guests">
+                        <option value="0">Solo yo (0)</option>
+                        <option value="1">1 acompañante</option>
+                        <option value="2">2 acompañantes</option>
+                        <option value="3">3 acompañantes</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-rsvp" id="btn-submit-rsvp">Confirmar mi lugar</button>
+            </form>
+        </div>
+
+        <p style="margin-top: 25px; margin-bottom: 10px; font-weight: bold; color: #fff;">¿Ya estás en la fiesta? ¡Sube tus fotos aquí! 📸</p>
         <div class="upload-area" id="drop-zone">
-            <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#00b4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#00b4d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             <p>Toca aquí para subir tus fotos 📸</p>
             <input type="file" id="file-input" multiple accept="image/*">
         </div>
@@ -168,12 +249,44 @@
         const progressBar = document.getElementById('progress');
         const galleryGrid = document.getElementById('gallery-grid');
 
-        // Función para cargar y mostrar las fotos desde Supabase
+        // LÓGICA DE CONFIRMACIÓN DE ASISTENCIA (RSVP)
+        const formRsvp = document.getElementById('form-rsvp');
+        const rsvpSection = document.getElementById('rsvp-section');
+
+        formRsvp.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('rsvp-name').value;
+            const acompanantes = parseInt(document.getElementById('rsvp-guests').value);
+
+            const btnSubmit = document.getElementById('btn-submit-rsvp');
+            btnSubmit.innerText = "Registrando...";
+            btnSubmit.disabled = true;
+
+            const { data, error } = await supabaseClient
+                .from('asistentes')
+                .insert([{ nombre: nombre, acompanantes: acompanantes, asiste: true }]);
+
+            if (error) {
+                console.error('Error al confirmar:', error.message);
+                alert('Hubo un problema al registrar tu asistencia, por favor intenta de nuevo.');
+                btnSubmit.innerText = "Confirmar mi lugar";
+                btnSubmit.disabled = false;
+            } else {
+                rsvpSection.innerHTML = `
+                    <div style="text-align: center; padding: 15px 10px; color: #00f5d4; font-weight: bold; font-size: 1.1rem;">
+                        ¡Muchas gracias, ${nombre}! 🎉<br>
+                        <span style="font-size: 0.9rem; color: #a0aec0; font-weight: normal;">Tu asistencia ha sido confirmada con éxito.</span>
+                    </div>
+                `;
+            }
+        });
+
+        // LÓGICA DE LA GALERÍA
         async function cargarGaleria() {
             galleryGrid.innerHTML = '';
             const { data, error } = await supabaseClient.storage.from('fotos').list('', {
                 limit: 100,
-                sortBy: { column: 'name', order: 'desc' } // Muestra las más recientes primero
+                sortBy: { column: 'name', order: 'desc' }
             });
 
             if (error) {
@@ -183,17 +296,14 @@
 
             if (data) {
                 data.forEach(file => {
-                    // Evitamos cargar carpetas o marcadores vacíos si los hay
                     if (file.name === '.emptyFolderPlaceholder') return;
 
-                    // Generamos la URL pública de la imagen
                     const { data: urlData } = supabaseClient.storage.from('fotos').getPublicUrl(file.name);
                     
                     if (urlData && urlData.publicUrl) {
                         const img = document.createElement('img');
                         img.src = urlData.publicUrl;
                         img.className = 'gallery-item';
-                        // Permite guardar la foto dejando presionado en móvil
                         img.setAttribute('loading', 'lazy'); 
                         galleryGrid.appendChild(img);
                     }
@@ -242,11 +352,9 @@
             statusText.style.color = '#00f5d4';
             fileInput.value = ''; 
             
-            // Recargamos la galería para mostrar lo nuevo de inmediato
             setTimeout(cargarGaleria, 800);
         });
 
-        // Ejecutar la carga al abrir la página
         cargarGaleria();
     </script>
 </body>
